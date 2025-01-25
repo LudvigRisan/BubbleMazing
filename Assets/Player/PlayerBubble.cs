@@ -107,6 +107,5 @@ public class PlayerBubble : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         dampening = 55;
-        Debug.Log(other.name);
     }
 }
