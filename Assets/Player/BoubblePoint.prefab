@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6573660194665761604}
   - component: {fileID: 1411276459886970566}
   - component: {fileID: 1041494316912409777}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BoubblePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -79,5 +79,5 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.01
+  m_Radius: 0.05
   m_Center: {x: 0, y: 0, z: 0}

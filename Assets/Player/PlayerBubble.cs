@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerBubble : MonoBehaviour
@@ -24,12 +25,21 @@ public class PlayerBubble : MonoBehaviour
     [Header("Camera")] 
     [SerializeField] 
     private Transform camera;
+    [SerializeField] 
+    private float cameraSmoothing = 1f;
+
+    [Header("Breakage")] 
+    [SerializeField] 
+    private float breakingPoint = 100f;
     
     private LineRenderer line;
     
     private Rigidbody[] points;
     
     private float targetPointDistance;
+    private float defaultAngle;
+
+    private float strain;
     
     void Awake() {
         line = GetComponent<LineRenderer>();
@@ -38,7 +48,7 @@ public class PlayerBubble : MonoBehaviour
         points = new Rigidbody[pointCount];
         for (int i = 0; i < pointCount; i++)
         {
-            points[i] = Instantiate(pointPrefab, transform);
+            points[i] = Instantiate(pointPrefab);
             points[i].position =new Vector3(Mathf.Sin(i * Mathf.PI * 2 / pointCount) * radius, 0f,
                 Mathf.Cos(i * Mathf.PI * 2 / pointCount) * radius);
         }
@@ -50,6 +60,7 @@ public class PlayerBubble : MonoBehaviour
     void FixedUpdate()
     {
         Vector3 centerPoint = Vector3.zero;
+        strain = 0;
         for (int i = 0; i < pointCount; i++)
         {
             line.SetPosition(i, points[i].position);
@@ -78,15 +89,24 @@ public class PlayerBubble : MonoBehaviour
             blower.position = hit.point;
             if (Input.GetMouseButton(0))
             {
+                Vector3 blowerDirection = (centerPoint - hit.point).normalized;
                 for (int i = 0; i < pointCount; i++)
                 {
                     Vector3 offset = blower.position - points[i].position;
-                    offset *= 1 / (offset.magnitude * offset.magnitude);
-                    points[i].AddForce(-offset * blowerForce);
+                    float blowerMagnitude = offset.magnitude;
+                    blowerMagnitude = Mathf.Min(1 / (blowerMagnitude * blowerMagnitude), 1);
+                    points[i].AddForce(blowerDirection * (blowerForce * blowerMagnitude));
                 }
             }
         }
         
         camera.position = Vector3.Lerp(camera.position, centerPoint + Vector3.up * 20, Time.deltaTime);
+        transform.position = centerPoint;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        dampening = 55;
+        Debug.Log(other.name);
     }
 }
