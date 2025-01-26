@@ -31,6 +31,8 @@ public class PlayerBubble : MonoBehaviour
     [Header("Breakage")] 
     [SerializeField] 
     private float breakingPoint = 100f;
+    [SerializeField] 
+    private GameObject reloadButton;
     
     private LineRenderer line;
     
@@ -49,7 +51,7 @@ public class PlayerBubble : MonoBehaviour
         for (int i = 0; i < pointCount; i++)
         {
             points[i] = Instantiate(pointPrefab);
-            points[i].position =new Vector3(Mathf.Sin(i * Mathf.PI * 2 / pointCount) * radius, 0f,
+            points[i].position = transform.position + new Vector3(Mathf.Sin(i * Mathf.PI * 2 / pointCount) * radius, 0f,
                 Mathf.Cos(i * Mathf.PI * 2 / pointCount) * radius);
         }
 
@@ -107,5 +109,6 @@ public class PlayerBubble : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         dampening = 55;
+        reloadButton.SetActive(true);
     }
 }
